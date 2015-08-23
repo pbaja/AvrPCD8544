@@ -12,7 +12,7 @@
  */
 
 #ifndef __LCD_NOKIA__
-#define __LCD_NOKIA
+#define __LCD_NOKIA__
 
 #include <avr/pgmspace.h>
 #include <stdint.h>
