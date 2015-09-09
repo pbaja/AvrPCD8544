@@ -34,6 +34,7 @@
 
 #define LCD_CONTRAST 0x40
 
+typedef struct lcd_nokia LcdNokia;
 
 struct lcd_nokia {
 	uint8_t screen[504];
@@ -49,39 +50,39 @@ void lcd_nokia_init(void);
 /*
  * Clear screen
  */
-void lcd_nokia_clear(struct lcd_nokia *lcd);
+void lcd_nokia_clear(LcdNokia *lcd);
 
 /**
  * Power of display
  * @lcd: lcd nokia struct
  * @on: 1 - on; 0 - off;
  */
-void lcd_nokia_power(struct lcd_nokia *lcd, uint8_t on);
+void lcd_nokia_power(LcdNokia *lcd, uint8_t on);
 
 /*
  * Set single pixel
  */
-void lcd_nokia_set_pixel(struct lcd_nokia *lcd, uint8_t x, uint8_t y, uint8_t value);
+void lcd_nokia_set_pixel(LcdNokia *lcd, uint8_t x, uint8_t y, uint8_t value);
 
 /*
  * Draw single char with 1-6 scale
  */
-void lcd_nokia_write_char(struct lcd_nokia *lcd, char code, uint8_t scale);
+void lcd_nokia_write_char(LcdNokia *lcd, char code, uint8_t scale);
 
 /*
  * Draw string. Example: writeString("abc",3);
  */
-void lcd_nokia_write_string(struct lcd_nokia *lcd, const char *str, uint8_t scale);
+void lcd_nokia_write_string(LcdNokia *lcd, const char *str, uint8_t scale);
 
 /*
  * Set cursor position
  */
-void lcd_nokia_set_cursor(struct lcd_nokia *lcd, uint8_t x, uint8_t y);
+void lcd_nokia_set_cursor(LcdNokia *lcd, uint8_t x, uint8_t y);
 
 /*
  * Render screen to display
  */
-void lcd_nokia_render(struct lcd_nokia *lcd);
+void lcd_nokia_render(LcdNokia *lcd);
 
 
 #endif
