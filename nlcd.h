@@ -11,8 +11,8 @@
  * Original library written by SkewPL, http://skew.tk
  */
 
-#ifndef __LCD_NOKIA__
-#define __LCD_NOKIA__
+#ifndef __LCD_NOKIA_H__
+#define __LCD_NOKIA_H__
 
 #include <avr/pgmspace.h>
 #include <stdint.h>

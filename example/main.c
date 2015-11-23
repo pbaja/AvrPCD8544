@@ -20,7 +20,7 @@
 
 int main(void)
 {
-	struct lcd_nokia lcd;
+	LcdNokia lcd;
 
 	lcd_nokia_init();
 	lcd_nokia_clear(&lcd);
