@@ -11,11 +11,12 @@
  * Original library written by SkewPL, http://skew.tk
  */
 
+#include "nokia5110.h"
+
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "nlcd.h"
-#include "nlcd_chars.h"
+#include "nokia5110_chars.h"
 
 
 /**
@@ -67,7 +68,7 @@ static void write_data(uint8_t data)
  * Public functions
  */
 
-void lcd_nokia_init(void)
+void nokia_lcd_init(void)
 {
 	register unsigned i;
 	/* Set pins as output */
@@ -84,7 +85,7 @@ void lcd_nokia_init(void)
 	PORT_LCD &= ~(1 << LCD_RST);
 	_delay_ms(70);
 	PORT_LCD |= (1 << LCD_RST);
-	
+
 	/*
 	 * Initialize display
 	 */
@@ -114,7 +115,7 @@ void lcd_nokia_init(void)
 	write_cmd(0x0C);
 }
 
-void lcd_nokia_clear(LcdNokia *lcd)
+void nokia_lcd_clear(Nokia5110 *lcd)
 {
 	register unsigned i;
 	/* Set column and row to 0 */
@@ -128,12 +129,12 @@ void lcd_nokia_clear(LcdNokia *lcd)
 		lcd->screen[i] = 0x00;
 }
 
-void lcd_nokia_power(LcdNokia *lcd, uint8_t on)
+void nokia_lcd_power(Nokia5110 *lcd, uint8_t on)
 {
 	write_cmd(on ? 0x20 : 0x24);
 }
 
-void lcd_nokia_set_pixel(LcdNokia *lcd, uint8_t x, uint8_t y, uint8_t value)
+void nokia_lcd_set_pixel(Nokia5110 *lcd, uint8_t x, uint8_t y, uint8_t value)
 {
 	uint8_t *byte = &lcd->screen[y/8*84+x];
 	if (value)
@@ -142,16 +143,16 @@ void lcd_nokia_set_pixel(LcdNokia *lcd, uint8_t x, uint8_t y, uint8_t value)
 		*byte &= ~(1 << (y %8 ));
 }
 
-void lcd_nokia_write_char(LcdNokia *lcd, char code, uint8_t scale)
+void nokia_lcd_write_char(Nokia5110 *lcd, char code, uint8_t scale)
 {
 	register uint8_t x, y;
 
 	for (x = 0; x < 5*scale; x++)
 		for (y = 0; y < 7*scale; y++)
 			if (pgm_read_byte(&CHARSET[code-32][x/scale]) & (1 << y/scale))
-				lcd_nokia_set_pixel(lcd, lcd->cursor_x + x, lcd->cursor_y + y, 1);
+				nokia_lcd_set_pixel(lcd, lcd->cursor_x + x, lcd->cursor_y + y, 1);
 			else
-				lcd_nokia_set_pixel(lcd, lcd->cursor_x + x, lcd->cursor_y + y, 0);
+				nokia_lcd_set_pixel(lcd, lcd->cursor_x + x, lcd->cursor_y + y, 0);
 
 	lcd->cursor_x += 5*scale + 1;
 	if (lcd->cursor_x >= 84) {
@@ -164,19 +165,19 @@ void lcd_nokia_write_char(LcdNokia *lcd, char code, uint8_t scale)
 	}
 }
 
-void lcd_nokia_write_string(LcdNokia *lcd, const char *str, uint8_t scale)
+void nokia_lcd_write_string(Nokia5110 *lcd, const char *str, uint8_t scale)
 {
 	while(*str)
-		lcd_nokia_write_char(lcd, *str++, scale);
+		nokia_lcd_write_char(lcd, *str++, scale);
 }
 
-void lcd_nokia_set_cursor(LcdNokia *lcd, uint8_t x, uint8_t y)
+void nokia_lcd_set_cursor(Nokia5110 *lcd, uint8_t x, uint8_t y)
 {
 	lcd->cursor_x = x;
 	lcd->cursor_y = y;
 }
 
-void lcd_nokia_render(LcdNokia *lcd)
+void nokia_lcd_render(Nokia5110 *lcd)
 {
 	register unsigned i;
 	/* Set column and row to 0 */

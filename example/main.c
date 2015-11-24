@@ -14,20 +14,20 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "nlcd.h"
+#include "nokia5110.h"
 
 #define F_CPU 16000000UL
 
 int main(void)
 {
-	LcdNokia lcd;
+	Nokia5110 lcd;
 
-	lcd_nokia_init();
-	lcd_nokia_clear(&lcd);
-	lcd_nokia_write_string(&lcd, "IT'S WORKING!",1);
-	lcd_nokia_set_cursor(&lcd, 0, 10);
-	lcd_nokia_write_string(&lcd, "Nice!", 3);
-	lcd_nokia_render(&lcd);
+	nokia_lcd_init();
+	nokia_lcd_clear(&lcd);
+	nokia_lcd_write_string(&lcd, "IT'S WORKING!",1);
+	nokia_lcd_set_cursor(&lcd, 0, 10);
+	nokia_lcd_write_string(&lcd, "Nice!", 3);
+	nokia_lcd_render(&lcd);
 
 	for (;;) {
 		_delay_ms(1000);

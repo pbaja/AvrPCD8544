@@ -11,8 +11,8 @@
  * Original library written by SkewPL, http://skew.tk
  */
 
-#ifndef __LCD_NOKIA_H__
-#define __LCD_NOKIA_H__
+#ifndef __nokia_lcd_H__
+#define __nokia_lcd_H__
 
 #include <avr/pgmspace.h>
 #include <stdint.h>
@@ -34,9 +34,9 @@
 
 #define LCD_CONTRAST 0x40
 
-typedef struct lcd_nokia LcdNokia;
+typedef struct nokia5110_t Nokia5110;
 
-struct lcd_nokia {
+struct nokia5110_t {
 	uint8_t screen[504];
 	uint8_t cursor_x;
 	uint8_t cursor_y;
@@ -45,44 +45,44 @@ struct lcd_nokia {
 /*
  * Must be called once before any other function, initializes display
  */
-void lcd_nokia_init(void);
+void nokia_lcd_init(void);
 
 /*
  * Clear screen
  */
-void lcd_nokia_clear(LcdNokia *lcd);
+void nokia_lcd_clear(Nokia5110 *lcd);
 
 /**
  * Power of display
  * @lcd: lcd nokia struct
  * @on: 1 - on; 0 - off;
  */
-void lcd_nokia_power(LcdNokia *lcd, uint8_t on);
+void nokia_lcd_power(Nokia5110 *lcd, uint8_t on);
 
 /*
  * Set single pixel
  */
-void lcd_nokia_set_pixel(LcdNokia *lcd, uint8_t x, uint8_t y, uint8_t value);
+void nokia_lcd_set_pixel(Nokia5110 *lcd, uint8_t x, uint8_t y, uint8_t value);
 
 /*
  * Draw single char with 1-6 scale
  */
-void lcd_nokia_write_char(LcdNokia *lcd, char code, uint8_t scale);
+void nokia_lcd_write_char(Nokia5110 *lcd, char code, uint8_t scale);
 
 /*
  * Draw string. Example: writeString("abc",3);
  */
-void lcd_nokia_write_string(LcdNokia *lcd, const char *str, uint8_t scale);
+void nokia_lcd_write_string(Nokia5110 *lcd, const char *str, uint8_t scale);
 
 /*
  * Set cursor position
  */
-void lcd_nokia_set_cursor(LcdNokia *lcd, uint8_t x, uint8_t y);
+void nokia_lcd_set_cursor(Nokia5110 *lcd, uint8_t x, uint8_t y);
 
 /*
  * Render screen to display
  */
-void lcd_nokia_render(LcdNokia *lcd);
+void nokia_lcd_render(Nokia5110 *lcd);
 
 
 #endif
