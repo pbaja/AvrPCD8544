@@ -20,7 +20,7 @@
 
 
 static struct {
-	/* screen byte massive */
+    /* screen byte massive */
     uint8_t screen[504];
 
     /* cursor position */
