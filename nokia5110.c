@@ -19,6 +19,19 @@
 #include "nokia5110_chars.h"
 
 
+static struct {
+	/* screen byte massive */
+    uint8_t screen[504];
+
+    /* cursor position */
+    uint8_t cursor_x;
+    uint8_t cursor_y;
+
+} nokia_lcd = {
+    .cursor_x = 0,
+    .cursor_y = 0
+};
+
 /**
  * Sending data to LCD
  * @bytes: data
@@ -115,69 +128,69 @@ void nokia_lcd_init(void)
 	write_cmd(0x0C);
 }
 
-void nokia_lcd_clear(Nokia5110 *lcd)
+void nokia_lcd_clear(void)
 {
 	register unsigned i;
 	/* Set column and row to 0 */
 	write_cmd(0x80);
 	write_cmd(0x40);
 	/*Cursor too */
-	lcd->cursor_x = 0;
-	lcd->cursor_y = 0;
+	nokia_lcd.cursor_x = 0;
+	nokia_lcd.cursor_y = 0;
 	/* Clear everything (504 bytes = 84cols * 48 rows / 8 bits) */
 	for(i = 0;i < 504; i++)
-		lcd->screen[i] = 0x00;
+		nokia_lcd.screen[i] = 0x00;
 }
 
-void nokia_lcd_power(Nokia5110 *lcd, uint8_t on)
+void nokia_lcd_power(uint8_t on)
 {
 	write_cmd(on ? 0x20 : 0x24);
 }
 
-void nokia_lcd_set_pixel(Nokia5110 *lcd, uint8_t x, uint8_t y, uint8_t value)
+void nokia_lcd_set_pixel(uint8_t x, uint8_t y, uint8_t value)
 {
-	uint8_t *byte = &lcd->screen[y/8*84+x];
+	uint8_t *byte = &nokia_lcd.screen[y/8*84+x];
 	if (value)
 		*byte |= (1 << (y % 8));
 	else
 		*byte &= ~(1 << (y %8 ));
 }
 
-void nokia_lcd_write_char(Nokia5110 *lcd, char code, uint8_t scale)
+void nokia_lcd_write_char(char code, uint8_t scale)
 {
 	register uint8_t x, y;
 
 	for (x = 0; x < 5*scale; x++)
 		for (y = 0; y < 7*scale; y++)
 			if (pgm_read_byte(&CHARSET[code-32][x/scale]) & (1 << y/scale))
-				nokia_lcd_set_pixel(lcd, lcd->cursor_x + x, lcd->cursor_y + y, 1);
+				nokia_lcd_set_pixel(nokia_lcd.cursor_x + x, nokia_lcd.cursor_y + y, 1);
 			else
-				nokia_lcd_set_pixel(lcd, lcd->cursor_x + x, lcd->cursor_y + y, 0);
+				nokia_lcd_set_pixel(nokia_lcd.cursor_x + x, nokia_lcd.cursor_y + y, 0);
 
-	lcd->cursor_x += 5*scale + 1;
-	if (lcd->cursor_x >= 84) {
-		lcd->cursor_x = 0;
-		lcd->cursor_y += 7*scale + 1;
+	nokia_lcd.cursor_x += 5*scale + 1;
+	if (nokia_lcd.cursor_x >= 84) {
+		nokia_lcd.cursor_x = 0;
+		nokia_lcd.cursor_y += 7*scale + 1;
 	}
-	if (lcd->cursor_y >= 48) {
-		lcd->cursor_x = 0;
-		lcd->cursor_y = 0;
+	if (nokia_lcd.cursor_y >= 48) {
+		nokia_lcd.cursor_x = 0;
+		nokia_lcd.cursor_y = 0;
 	}
 }
 
-void nokia_lcd_write_string(Nokia5110 *lcd, const char *str, uint8_t scale)
+void nokia_lcd_write_string(const char *str, uint8_t scale)
 {
 	while(*str)
-		nokia_lcd_write_char(lcd, *str++, scale);
+		nokia_lcd_write_char(*str++, scale);
 }
 
-void nokia_lcd_set_cursor(Nokia5110 *lcd, uint8_t x, uint8_t y)
+void nokia_lcd_set_cursor(uint8_t x, uint8_t y)
 {
-	lcd->cursor_x = x;
-	lcd->cursor_y = y;
+	nokia_lcd.cursor_x = x;
+	nokia_lcd.cursor_y = y;
 }
 
-void nokia_lcd_render(Nokia5110 *lcd)
+void nokia_lcd_render(void)
 {
 	register unsigned i;
 	/* Set column and row to 0 */
@@ -186,5 +199,5 @@ void nokia_lcd_render(Nokia5110 *lcd)
 
 	/* Write screen to display */
 	for (i = 0; i < 504; i++)
-		write_data(lcd->screen[i]);
+		write_data(nokia_lcd.screen[i]);
 }
